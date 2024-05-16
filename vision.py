@@ -6,7 +6,7 @@ import time
 import mediapipe as mp
 mp_holistic = mp.solutions.holistic
 mp_drawing = mp.solutions.drawing_utils
-def md(image,model):
+def md(image,model):ssss
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image.flags.writeable=False
     results = model.process(image)
