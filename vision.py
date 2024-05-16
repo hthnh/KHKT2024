@@ -86,4 +86,9 @@ for action in actions:
             os.makedirs(os.path.join(DATA_PATH, action, str(dirmax+sequence)))
         except:
             pass
-#6
+#6 Preprocess Dât and create Labels and feature
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import LSTM, Dense
+from tensorflow.keras.callbacks import TensorBoard
+log_dir = os.path.join('Logs')
+tb_callback = TensorBoard(log_dir=log_dir)
