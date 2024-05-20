@@ -40,9 +40,9 @@ DATA_PATH = os.path.join('MP_Data')
 # Actions that we try to detect
 actions = np.array(['hello', 'thanks', 'iloveyou'])
 # Thirty videos worth of data
-no_sequences = 30
+no_sequences = 20
 # Videos are going to be 30 frames in length
-sequence_length = 30
+sequence_length = 20
 # Folder start
 start_folder = 0
 
