@@ -1,12 +1,47 @@
 import cv2
+import mediapipe as mp 
 import numpy as np
-import os
-import matplotlib.pyplot as plt    
-import time
-import mediapipe as mp
+from tensorflow.keras.models import Sequential
+from tensorflow.keras.layers import LSTM, Dense
+
+
+sequence = []
+sentence = []
+threshold = 0.8
+actions = np.array(['hello', 'thanks', 'iloveyou'])
+
+
+model = Sequential()
+
+model.add(LSTM(64, return_sequences=True, activation='relu', input_shape=(30,1662)))
+model.add(LSTM(128, return_sequences=True, activation='relu'))
+model.add(LSTM(64, return_sequences=False, activation='relu'))
+model.add(Dense(64, activation='relu'))
+model.add(Dense(32, activation='relu'))
+model.add(Dense(actions.shape[0], activation='softmax'))
+model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['categorical_accuracy'])
+
+
+
+model.load_weights('action.h5')
+
+
+
+
+colors = [(245,117,16), (117,245,16), (16,117,245)]
+def prob_viz(res, actions, input_frame, colors):
+    output_frame = input_frame.copy()
+    for num, prob in enumerate(res):
+        cv2.rectangle(output_frame, (0,60+num*40), (int(prob*100), 90+num*40), colors[num], -1)
+        cv2.putText(output_frame, actions[num], (0, 85+num*40), cv2.FONT_HERSHEY_SIMPLEX, 1, (255,255,255), 2, cv2.LINE_AA)
+        
+    return output_frame
+
+
 
 mp_holistic = mp.solutions.holistic
 mp_drawing = mp.solutions.drawing_utils
+
 def md(image,model):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image.flags.writeable=False
@@ -32,20 +67,16 @@ def draw_styled_landmarks(image, results):
                              mp_drawing.DrawingSpec(color=(245,66,230), thickness=2, circle_radius=2)
                              ) 
 mp_holistic.POSE_CONNECTIONS
-DATA_PATH = os.path.join('MP_Data') 
-actions = np.array(['hello', 'thanks', 'iloveyou'])
-no_sequences = 50
-sequence_length = 50
-start_folder = 0
+
 
 
 
 def mediapipe_detection(image, model):
-    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
-    image.flags.writeable = False                 
+    image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB) 
+    image.flags.writeable = False                  
     results = model.process(image)                 
     image.flags.writeable = True                    
-    image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR) 
+    image = cv2.cvtColor(image, cv2.COLOR_RGB2BGR)
     return image, results
 
 def extract_keypoints(results):
@@ -55,49 +86,47 @@ def extract_keypoints(results):
     rh = np.array([[res.x, res.y, res.z] for res in results.right_hand_landmarks.landmark]).flatten() if results.right_hand_landmarks else np.zeros(21*3)
     return np.concatenate([pose, face, lh, rh])
 
-for action in actions: 
-    try:
-        os.makedirs(os.path.join(DATA_PATH, action, str(0)))
-    except:
-        pass    
-    dirmax = np.max(np.array(os.listdir(os.path.join(DATA_PATH, action))).astype(int))
-    for sequence in range(1,no_sequences+1):
-        try: 
-            os.makedirs(os.path.join(DATA_PATH, action, str(dirmax+sequence)))
-        except:
-            pass
+
+
 cap = cv2.VideoCapture(0)
-sequence = 0
-
 with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
-    for action in actions:
-        for sequence in range(start_folder, start_folder+no_sequences):
-            for frame_num in range(sequence_length):
+    while cap.isOpened():
 
-                ret, frame = cap.read()
+        ret, frame = cap.read()
 
-                image, results = mediapipe_detection(frame, holistic)
+        image, results = mediapipe_detection(frame, holistic)
+        print(results)
+        
+        draw_styled_landmarks(image, results)
+        
+        keypoints = extract_keypoints(results)
+        sequence.append(keypoints)
+        sequence = sequence[-30:]
+        
+        if len(sequence) == 30:
+            res = model.predict(np.expand_dims(sequence, axis=0))[0]
+            print(actions[np.argmax(res)])
+            
+            
+            if res[np.argmax(res)] > threshold: 
+                if len(sentence) > 0: 
+                    if actions[np.argmax(res)] != sentence[-1]:
+                        sentence.append(actions[np.argmax(res)])
+                else:
+                    sentence.append(actions[np.argmax(res)])
 
-                draw_styled_landmarks(image, results)
-                
-                if frame_num == 0: 
-                    cv2.putText(image, 'STARTING COLLECTION', (120,200), 
-                               cv2.FONT_HERSHEY_SIMPLEX, 1, (0,255, 0), 4, cv2.LINE_AA)
-                    cv2.putText(image, 'Collecting frames for {} Video Number {}'.format(action, sequence), (15,12), 
-                               cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1, cv2.LINE_AA)
-                    cv2.imshow('OpenCV Feed', image)
-                    cv2.waitKey(1000)
-                else: 
-                    cv2.putText(image, 'Collecting frames for {} Video Number {}'.format(action, sequence), (15,12), 
-                               cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1, cv2.LINE_AA)
-                    cv2.imshow('OpenCV Feed', image)
-                
-                keypoints = extract_keypoints(results)
-                npy_path = os.path.join(DATA_PATH, action, str(sequence), str(frame_num))
-                np.save(npy_path, keypoints)
+            if len(sentence) > 5: 
+                sentence = sentence[-5:]
 
-                if cv2.waitKey(10) & 0xFF == ord('q'):
-                    break
-                    
+            image = prob_viz(res, actions, image, colors)
+            
+        cv2.rectangle(image, (0,0), (640, 40), (245, 117, 16), -1)
+        cv2.putText(image, ' '.join(sentence), (3,30), 
+                       cv2.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv2.LINE_AA)
+        
+        cv2.imshow('hth AI ', image)
+
+        if cv2.waitKey(10) & 0xFF == ord('q'):
+            break
     cap.release()
     cv2.destroyAllWindows()
