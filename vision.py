@@ -37,38 +37,38 @@ def draw_styled_landmarks(image, results):
 mp_holistic.POSE_CONNECTIONS
 
 
-# cap = cv2.VideoCapture(0)
-# with mp_holistic.Holistic(min_detection_confidence=0.5,min_tracking_confidence=0.5)as holistic:
-#     while cap.isOpened():
-#         ret, frame = cap.read()
-#         image, results = md(frame, holistic )
-#         draw_styled_landmarks(image,results)
-#         cv2.imshow('OpenCV Feed', image)
-#         if cv2.waitKey(10) & 0xFF == ord('q'):
-#             break
-#     cap.release()
-#     cv2.destroyAllWindows()
-# plt.imshow(cv2.cvtColor(frame,cv2.Color_BGR2RGB))
-# pose = []
-# for res in results.pose_landmarks.landmark:
-#     test = np.array([res.x, res.y, res.z, res.visibility])
-#     pose.append(test)
-# pose = np.array([[res.x, res.y, res.z, res.visibility] for res in results.pose_landmarks.landmark]).flatten() if results.pose_landmarks else np.zeros(132)
-# face = np.array([[res.x, res.y, res.z] for res in results.face_landmarks.landmark]).flatten() if results.face_landmarks else np.zeros(1404)
-# lh = np.array([[res.x, res.y, res.z] for res in results.left_hand_landmarks.landmark]).flatten() if results.left_hand_landmarks else np.zeros(21*3)
-# rh = np.array([[res.x, res.y, res.z] for res in results.right_hand_landmarks.landmark]).flatten() if results.right_hand_landmarks else np.zeros(21*3)
-# face = np.array([[res.x, res.y, res.z] for res in results.face_landmarks.landmark]).flatten() 
+cap = cv2.VideoCapture(0)
+with mp_holistic.Holistic(min_detection_confidence=0.5,min_tracking_confidence=0.5)as holistic:
+    while cap.isOpened():
+        ret, frame = cap.read()
+        image, results = md(frame, holistic )
+        draw_styled_landmarks(image,results)
+        cv2.imshow('OpenCV Feed', image)
+        if cv2.waitKey(10) & 0xFF == ord('q'):
+            break
+    cap.release()
+    cv2.destroyAllWindows()
+plt.imshow(cv2.cvtColor(frame,cv2.Color_BGR2RGB))
+pose = []
+for res in results.pose_landmarks.landmark:
+    test = np.array([res.x, res.y, res.z, res.visibility])
+    pose.append(test)
+pose = np.array([[res.x, res.y, res.z, res.visibility] for res in results.pose_landmarks.landmark]).flatten() if results.pose_landmarks else np.zeros(132)
+face = np.array([[res.x, res.y, res.z] for res in results.face_landmarks.landmark]).flatten() if results.face_landmarks else np.zeros(1404)
+lh = np.array([[res.x, res.y, res.z] for res in results.left_hand_landmarks.landmark]).flatten() if results.left_hand_landmarks else np.zeros(21*3)
+rh = np.array([[res.x, res.y, res.z] for res in results.right_hand_landmarks.landmark]).flatten() if results.right_hand_landmarks else np.zeros(21*3)
+face = np.array([[res.x, res.y, res.z] for res in results.face_landmarks.landmark]).flatten() 
 
-# def extract_keypoints(results):
-#     pose = np.array([[res.x, res.y, res.z, res.visibility] for res in results.pose_landmarks.landmark]).flatten() if results.pose_landmarks else np.zeros(33*4)
-#     face = np.array([[res.x, res.y, res.z] for res in results.face_landmarks.landmark]).flatten() if results.face_landmarks else np.zeros(468*3)
-#     lh = np.array([[res.x, res.y, res.z] for res in results.left_hand_landmarks.landmark]).flatten() if results.left_hand_landmarks else np.zeros(21*3)
-#     rh = np.array([[res.x, res.y, res.z] for res in results.right_hand_landmarks.landmark]).flatten() if results.right_hand_landmarks else np.zeros(21*3)
-#     return np.concatenate([pose, face, lh, rh])
-# result_test = extract_keypoints(results)
+def extract_keypoints(results):
+    pose = np.array([[res.x, res.y, res.z, res.visibility] for res in results.pose_landmarks.landmark]).flatten() if results.pose_landmarks else np.zeros(33*4)
+    face = np.array([[res.x, res.y, res.z] for res in results.face_landmarks.landmark]).flatten() if results.face_landmarks else np.zeros(468*3)
+    lh = np.array([[res.x, res.y, res.z] for res in results.left_hand_landmarks.landmark]).flatten() if results.left_hand_landmarks else np.zeros(21*3)
+    rh = np.array([[res.x, res.y, res.z] for res in results.right_hand_landmarks.landmark]).flatten() if results.right_hand_landmarks else np.zeros(21*3)
+    return np.concatenate([pose, face, lh, rh])
+#result_test = extract_keypoints(results)
 
-# # np.save('0', result_test)
-# np.load('0.npy')
+#np.save('0', result_test)
+#np.load('0.npy')
 # Path for exported data, numpy arrays
 DATA_PATH = os.path.join('MP_Data') 
 # Actions that we try to detect
@@ -86,8 +86,6 @@ for action in actions:
             os.makedirs(os.path.join(DATA_PATH, action, str(dirmax+sequence)))
         except:
             pass
-
-
 cap = cv2.VideoCapture(0)
 # Set mediapipe model 
 with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=0.5) as holistic:
@@ -135,3 +133,19 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
                     
     cap.release()
     cv2.destroyAllWindows()
+from sklearn.model_selection import train_test_split
+from tensorflow.keras.utils import _categorical 
+label_map = {label:num for num, label in enumerate(actions)}
+sequences,labels = [], []
+for action in actions:
+    for sequence in np.array(os.listdir(os.path.join(DATA_PATH, action))).astype(int):
+        window = []
+        for frame_num in range(sequence_length):
+            res = np.load(os.path.join(DATA_PATH, action, str(sequence), "{}.npy".format(frame_num)))
+            window.append(res)
+        sequences.append(window)
+        labels.append(label_map[action])
+x = np.array(sequences)
+y = to_categorical(labels).astype(int)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.05)
+        
