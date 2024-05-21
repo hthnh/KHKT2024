@@ -1,13 +1,13 @@
 import cv2
 import numpy as np
 import os
-import matplotlib.pyplot as plt    
+import matplotlib.pyplot as plt
 import time
 import mediapipe as mp
 
 
 #setup
-actions = np.array(['A'])
+actions = np.array(['B'])
 no_sequences = 30
 sequence_length = 30
 
