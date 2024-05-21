@@ -10,8 +10,9 @@ import numpy as np
 
 DATA_PATH = os.path.join('MP_Data') 
 sequence_length = 49
-
 actions = np.array(['hello', 'thanks', 'iloveyou'])
+
+
 label_map = {label:num for num, label in enumerate(actions)}
 sequences, labels = [], []
 for action in actions:

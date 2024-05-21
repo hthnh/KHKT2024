@@ -5,6 +5,16 @@ import matplotlib.pyplot as plt
 import time
 import mediapipe as mp
 
+
+#setup
+actions = np.array(['hello', 'thanks', 'iloveyou'])
+no_sequences = 50
+sequence_length = 50
+
+
+
+
+
 mp_holistic = mp.solutions.holistic
 mp_drawing = mp.solutions.drawing_utils
 def md(image,model):
@@ -33,9 +43,7 @@ def draw_styled_landmarks(image, results):
                              ) 
 mp_holistic.POSE_CONNECTIONS
 DATA_PATH = os.path.join('MP_Data') 
-actions = np.array(['hello', 'thanks', 'iloveyou'])
-no_sequences = 50
-sequence_length = 50
+
 start_folder = 0
 
 
