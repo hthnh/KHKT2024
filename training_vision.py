@@ -9,8 +9,8 @@ import cv2
 import numpy as np
 
 DATA_PATH = os.path.join('MP_Data') 
-sequence_length = 49
-actions = np.array(['hello', 'thanks', 'iloveyou'])
+sequence_length = 29
+actions = np.array(['B', 'C'])
 
 
 label_map = {label:num for num, label in enumerate(actions)}
