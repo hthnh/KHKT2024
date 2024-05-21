@@ -1,3 +1,5 @@
-A
-B
-C
+A (redo 1 time)
+B (redo 1 time)
+C (redo 1 time)
+E
+D
