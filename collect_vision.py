@@ -7,7 +7,7 @@ import mediapipe as mp
 
 
 #setup
-actions = np.array(['B'])
+actions = np.array(['c'])
 no_sequences = 30
 sequence_length = 30
 
