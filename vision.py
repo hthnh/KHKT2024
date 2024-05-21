@@ -8,7 +8,7 @@ from tensorflow.keras.layers import LSTM, Dense
 sequence = []
 sentence = []
 threshold = 0.8
-actions = np.array(['hello', 'thanks', 'iloveyou'])
+actions = np.array(['B', 'C'])
 
 
 model = Sequential()
