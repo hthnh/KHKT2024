@@ -7,7 +7,7 @@ import mediapipe as mp
 
 
 #setup
-actions = np.array(['E'])
+actions = np.array(['Z'])
 no_sequences = 30
 sequence_length = 30
 
@@ -94,7 +94,7 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
                     cv2.putText(image, 'Collecting frames for {} Video Number {}'.format(action, sequence), (15,12), 
                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1, cv2.LINE_AA)
                     cv2.imshow('OpenCV Feed', image)
-                    cv2.waitKey(500)
+                    cv2.waitKey(3000)
                 else: 
                     cv2.putText(image, 'Collecting frames for {} Video Number {}'.format(action, sequence), (15,12), 
                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1, cv2.LINE_AA)
