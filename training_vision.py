@@ -10,7 +10,7 @@ import numpy as np
 
 DATA_PATH = os.path.join('MP_Data') 
 sequence_length = 29
-actions = np.array(['B', 'C'])
+actions = np.array(['A','B','C'])
 
 
 label_map = {label:num for num, label in enumerate(actions)}
