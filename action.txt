@@ -1,6 +1,6 @@
-A (redo 1 time)
-B (redo 1 time)
-c (redo 1 time)
+A
+B 
+c 
 D
 E
 F
