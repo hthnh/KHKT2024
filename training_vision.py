@@ -9,7 +9,7 @@ import cv2
 import numpy as np
 
 DATA_PATH = os.path.join('MP_Data') 
-sequence_length = 29
+sequence_length = 15
 
 # f = open("action.txt",'r')
 # temp = f.readlines()
