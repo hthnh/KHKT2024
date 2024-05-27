@@ -7,9 +7,11 @@ import mediapipe as mp
 
 
 #setup
-actions = np.array(['A','B'])
-no_sequences = 100
-sequence_length = 15
+actions = np.array(['A','B']) # moi lan 1 action thoi mec lam 
+no_sequences = 50 # so folder
+sequence_length = 30 # so frame cua 1 folder
+start_folder = 0 # chinh lai start = end 
+
 
 
 
@@ -44,7 +46,6 @@ def draw_styled_landmarks(image, results):
 mp_holistic.POSE_CONNECTIONS
 DATA_PATH = os.path.join('MP_Data') 
 
-start_folder = 0
 
 
 
@@ -104,7 +105,7 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
                 npy_path = os.path.join(DATA_PATH, action, str(sequence), str(frame_num))
                 np.save(npy_path, keypoints)
 
-                if cv2.waitKey(10) & 0xFF == ord('q'):
+                if cv2.waitKey(100) & 0xFF == ord('q'):
                     break
                     
     cap.release()
