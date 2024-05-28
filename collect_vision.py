@@ -7,9 +7,15 @@ import mediapipe as mp
 
 
 #setup
-actions = np.array(['Z'])
-no_sequences = 30
-sequence_length = 30
+DATA_PATH = os.path.join('MP_Data') 
+actions = np.array(['A','B']) # moi lan 1 action thoi mec lam 
+no_sequences = 10 # so folder
+sequence_length = 30 # so frame cua 1 folder
+count = 0
+file_data = 'D:/KHKT2024/MP_DATA/A'
+count = len(next(os.walk(file_data))[1])
+start_folder =  count
+
 
 
 
@@ -42,9 +48,8 @@ def draw_styled_landmarks(image, results):
                              mp_drawing.DrawingSpec(color=(245,66,230), thickness=2, circle_radius=2)
                              ) 
 mp_holistic.POSE_CONNECTIONS
-DATA_PATH = os.path.join('MP_Data') 
 
-start_folder = 0
+
 
 
 
@@ -94,7 +99,7 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
                     cv2.putText(image, 'Collecting frames for {} Video Number {}'.format(action, sequence), (15,12), 
                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1, cv2.LINE_AA)
                     cv2.imshow('OpenCV Feed', image)
-                    cv2.waitKey(3000)
+                    cv2.waitKey(1000)
                 else: 
                     cv2.putText(image, 'Collecting frames for {} Video Number {}'.format(action, sequence), (15,12), 
                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1, cv2.LINE_AA)
@@ -104,7 +109,7 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
                 npy_path = os.path.join(DATA_PATH, action, str(sequence), str(frame_num))
                 np.save(npy_path, keypoints)
 
-                if cv2.waitKey(10) & 0xFF == ord('q'):
+                if cv2.waitKey(100) & 0xFF == ord('q'):
                     break
                     
     cap.release()
