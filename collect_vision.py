@@ -7,6 +7,14 @@ import mediapipe as mp
 
 
 #setup
+DATA_PATH = os.path.join('MP_Data') 
+actions = np.array(['A','B']) # moi lan 1 action thoi mec lam 
+no_sequences = 10 # so folder
+sequence_length = 30 # so frame cua 1 folder
+count = 0
+file_data = 'D:/KHKT2024/MP_DATA/A'
+count = len(next(os.walk(file_data))[1])
+start_folder =  count
 
 
 
