@@ -52,7 +52,6 @@ mp_holistic.POSE_CONNECTIONS
 
 
 
-
 def mediapipe_detection(image, model):
     image = cv2.cvtColor(image, cv2.COLOR_BGR2RGB)
     image.flags.writeable = False                 
