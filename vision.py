@@ -20,7 +20,7 @@ actions = np.array(['A','B'])
 
 model = Sequential()
 
-model.add(LSTM(128, return_sequences=True, activation='relu', input_shape=(30,1662)))
+model.add(LSTM(128, return_sequences=True, activation='relu', input_shape=(3324,512)))#ban đầu là 30,1662
 model.add(LSTM(256, return_sequences=True, activation='relu'))
 model.add(LSTM(128, return_sequences=False, activation='relu'))
 model.add(Dense(64, activation='relu'))
