@@ -20,17 +20,18 @@ actions = np.array(['A','B'])
 
 model = Sequential()
 
-model.add(LSTM(128, return_sequences=True, activation='relu', input_shape=(3324,512)))#ban đầu là 30,1662
-model.add(LSTM(256, return_sequences=True, activation='relu'))
-model.add(LSTM(128, return_sequences=False, activation='relu'))
+model.add(LSTM(256, return_sequences=True, activation='relu', input_shape=(15,1662)))
+model.add(LSTM(512, return_sequences=True, activation='relu'))
+model.add(LSTM(256, return_sequences=False, activation='relu'))
+model.add(Dense(256, activation='relu'))
+model.add(Dense(128, activation='relu'))
 model.add(Dense(64, activation='relu'))
 model.add(Dense(32, activation='relu'))
 model.add(Dense(actions.shape[0], activation='softmax'))
 model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['categorical_accuracy'])
 
 
-
-model.load_weights('action.h5')
+model.load_weights('action.keras')
 
 
 
