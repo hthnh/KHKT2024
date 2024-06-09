@@ -7,7 +7,7 @@ from tensorflow.keras.layers import LSTM, Dense
 
 sequence = []
 sentence = []
-threshold = 0.8
+threshold = 0.5
 
 # f = open("action.txt",'r')
 # temp = f.readlines()
@@ -15,7 +15,7 @@ threshold = 0.8
 # temp = [s.replace(" ","") for s in temp]
 # actions = np.array(temp)
 
-actions = np.array(['A','B'])
+actions = np.array(['A','B','C','D'])
 
 
 model = Sequential()
