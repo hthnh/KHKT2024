@@ -8,7 +8,7 @@ import mediapipe as mp
 
 #setup
 DATA_PATH = os.path.join('MP_Data') 
-actions = np.array(['D']) # moi lan 1 action thoi mec lam 
+actions = np.array(['free']) # moi lan 1 action thoi mec lam 
 no_sequences = 100 # so folder
 sequence_length = 15 # so frame cua 1 folder
 count = 0
@@ -97,7 +97,7 @@ with mp_holistic.Holistic(min_detection_confidence=0.5, min_tracking_confidence=
                     cv2.putText(image, 'Collecting frames for {} Video Number {}'.format(action, sequence), (15,12), 
                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1, cv2.LINE_AA)
                     cv2.imshow('OpenCV Feed', image)
-                    cv2.waitKey(1000)
+                    cv2.waitKey(1)
                 else: 
                     cv2.putText(image, 'Collecting frames for {} Video Number {}'.format(action, sequence), (15,12), 
                                cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255), 1, cv2.LINE_AA)

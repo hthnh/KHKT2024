@@ -17,7 +17,7 @@ sequence_length = 15
 # temp = [s.replace(" ","") for s in temp]
 # actions = np.array(temp)
 
-actions = np.array(['A','B','C','D'])
+actions = np.array(['A','B','C','D','free'])
 
 label_map = {label:num for num, label in enumerate(actions)}
 sequences, labels = [], []
@@ -42,24 +42,37 @@ model.add(Dense(64, activation='relu'))
 model.add(Dense(32, activation='relu'))
 model.add(Dense(actions.shape[0], activation='softmax'))
 model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['categorical_accuracy'])
-model.fit(X_train, y_train, epochs=105, callbacks=[tb_callback])
+model.fit(X_train, y_train, epochs=1000, callbacks=[tb_callback])
 
 model.save("action.keras")
 
 
 res = model.predict(X_test)
-print(res[0])
 # print(np.sum(res))
 print(actions[np.argmax(res[0])])
 print(actions[np.argmax(y_test[0])])
 
+print(" ")
+
 print(actions[np.argmax(res[1])])
 print(actions[np.argmax(y_test[1])])
+
+print(" ")
+
 
 print(actions[np.argmax(res[2])])
 print(actions[np.argmax(y_test[2])])
 
+print(" ")
+
+
 print(actions[np.argmax(res[3])])
 print(actions[np.argmax(y_test[3])])
+
+print(" ")
+
+
+print(actions[np.argmax(res[4])])
+print(actions[np.argmax(y_test[4])])
 
 model.summary()
