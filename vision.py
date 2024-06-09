@@ -15,7 +15,7 @@ threshold = 0.5
 # temp = [s.replace(" ","") for s in temp]
 # actions = np.array(temp)
 
-actions = np.array(['A','B','C','D','free'])
+actions = np.array(['A','free'])
 
 
 model = Sequential()
