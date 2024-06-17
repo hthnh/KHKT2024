@@ -8,12 +8,12 @@ import mediapipe as mp
 
 #setup
 DATA_PATH = os.path.join('MP_Data') 
-actions = np.array(['free']) # moi lan 1 action thoi mec lam 
+actions = np.array(['C']) # moi lan 1 action thoi mec lam 
 no_sequences = 100 # so folder
 sequence_length = 15 # so frame cua 1 folder
 count = 0
-#file_data = os.path.join('MP_Data/Dong Y') 
-#count = len(next(os.walk(file_data))[1])
+file_data = os.path.join('MP_Data/C') 
+count = len(next(os.walk(file_data))[1])
 start_folder =  count
 
 

@@ -3,6 +3,7 @@ from tensorflow.keras.utils import to_categorical
 from tensorflow.keras.models import Sequential
 from tensorflow.keras.layers import LSTM, Dense
 from tensorflow.keras.callbacks import TensorBoard
+from keras import callbacks
 import os
 import mediapipe as mp
 import cv2
@@ -17,7 +18,7 @@ sequence_length = 15
 # temp = [s.replace(" ","") for s in temp]
 # actions = np.array(temp)
 
-actions = np.array(['A','free'])
+actions = np.array(['A','free','B','C'])
 
 label_map = {label:num for num, label in enumerate(actions)}
 sequences, labels = [], []
@@ -31,7 +32,7 @@ for action in actions:
         labels.append(label_map[action])
 X = np.array(sequences)
 y = to_categorical(labels).astype(int)
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.05)
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3)
 log_dir = os.path.join('Logs')
 tb_callback = TensorBoard(log_dir=log_dir)
 model = Sequential()
@@ -42,8 +43,8 @@ model.add(Dense(64, activation='relu'))
 model.add(Dense(32, activation='relu'))
 model.add(Dense(actions.shape[0], activation='softmax'))
 model.compile(optimizer='Adam', loss='categorical_crossentropy', metrics=['categorical_accuracy'])
-model.fit(X_train, y_train, epochs=85, callbacks=[tb_callback])
-
+es = callbacks.EarlyStopping(monitor='val_loss', mode='min', verbose=1, patience=200, restore_best_weights=True)
+model.fit(X_train, y_train, validation_data=(X_test, y_test), epochs=2000,batch_size=450 ,verbose=1, callbacks=[es])
 model.save("action.keras")
 
 
